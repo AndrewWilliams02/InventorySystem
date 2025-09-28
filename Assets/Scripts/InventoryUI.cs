@@ -9,7 +9,7 @@ public class InventoryUI : MonoBehaviour
     private Transform itemSlotContainer;
     private Transform itemSlotTemplate;
     float itemSlotCellSize = 90;
-    float itemsPerRow = 5;
+    float itemsPerRow = 7;
 
 
     private void Awake()
