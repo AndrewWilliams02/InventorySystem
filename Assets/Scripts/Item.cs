@@ -14,12 +14,12 @@ public class Item
         DamageBuffPotion,
     }
 
-    public ItemType itemtype;
+    public ItemType itemType;
     public int amount;
 
     public Sprite GetSprite()
     {
-        switch (itemtype)
+        switch (itemType)
         {
             default:
             case ItemType.Armor:                    return ItemAssets.Instance.armorSprite;
@@ -28,6 +28,22 @@ public class Item
             case ItemType.CritPotion:               return ItemAssets.Instance.critPotionSprite;
             case ItemType.DamageReductionPotion:    return ItemAssets.Instance.damageReductionPotionSprite;
             case ItemType.DamageBuffPotion:         return ItemAssets.Instance.damageBuffPotionSprite;
+        }
+    }
+
+    public bool IsStackable()
+    {
+        switch (itemType)
+        {
+            default:
+            case ItemType.HealthPotion:
+            case ItemType.CritPotion:
+            case ItemType.DamageReductionPotion:
+            case ItemType.DamageBuffPotion:
+                return true;
+            case ItemType.Armor:
+            case ItemType.Weapon:
+                return false;
         }
     }
 }
