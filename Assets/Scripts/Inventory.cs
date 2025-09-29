@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using static Item;
 
@@ -8,15 +9,17 @@ public class Inventory
 {
     public event EventHandler OnItemListChanged;
 
+    private Action<Item> useItemAction;
     private List<Item> itemList;
     private int maxItemSlots = 28;
     private String inventroyFull = "Inventroy is full!";
 
 
-    public Inventory()
+    public Inventory(Action<Item> useItemAction)
     {
+        this.useItemAction = useItemAction;
         itemList = new List<Item>();
-        Debug.Log("Items: " + itemList.Count);
+        Debug.Log($"Items: {itemList.Count}");
     }
 
     public void AddItem(Item item)
@@ -51,7 +54,7 @@ public class Inventory
         }
 
         OnItemListChanged?.Invoke(this, EventArgs.Empty);
-        Debug.Log("Items: " + itemList.Count);
+        Debug.Log($"Items: {itemList.Count}");
     }
 
     public List<Item> GetItemList()
@@ -59,7 +62,14 @@ public class Inventory
         return itemList;
     }
 
-    public void SellItem(Item item, int currency)
+    public int SellItem(Item item, int currency)
+    {
+        RemoveItem(item);
+        currency = ItemValue(item.itemType);
+        return currency;
+    }
+
+    public void RemoveItem(Item item)
     {
         if (item.IsStackable())
         {
@@ -68,11 +78,11 @@ public class Inventory
             {
                 if (inventoryItem.itemType == item.itemType)
                 {
-                    inventoryItem.amount -= item.amount;
+                    inventoryItem.amount -= 1;
                     itemInInventory = inventoryItem;
                 }
             }
-            if (itemInInventory != null && itemInInventory.amount <=0)
+            if (itemInInventory != null && itemInInventory.amount <= 0)
             {
                 itemList.Remove(itemInInventory);
             }
@@ -81,11 +91,12 @@ public class Inventory
         {
             itemList.Remove(item);
         }
-
-        currency += ItemValue(item.itemType);
-
         OnItemListChanged?.Invoke(this, EventArgs.Empty);
-        Debug.Log("Items: " + itemList.Count);
+    }
+
+    public void UseItem(Item item)
+    {
+        useItemAction(item);
     }
 
     private int ItemValue(Item.ItemType itemType)

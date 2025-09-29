@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using CodeMonkey.Utils;
 
 public class InventoryUI : MonoBehaviour
 {
@@ -51,11 +52,16 @@ public class InventoryUI : MonoBehaviour
             RectTransform itemSlotRectTransform = Instantiate(itemSlotTemplate, itemSlotContainer).GetComponent<RectTransform>();
             itemSlotRectTransform.gameObject.SetActive(true);
 
-            if (Input.GetMouseButtonDown(1))
+            itemSlotRectTransform.GetComponent<Button_UI>().ClickFunc = () =>
             {
-                inventory.SellItem(item, currency);
+                inventory.UseItem(item);
+            };
+            itemSlotRectTransform.GetComponent<Button_UI>().MouseRightClickFunc = () =>
+            {
+                int earned = inventory.SellItem(item, currency);
+                currency += earned;
                 currencyText.text = $"Currency: ${currency}";
-            }
+            };
 
             itemSlotRectTransform.anchoredPosition = new Vector2(x * itemSlotCellSize, y * itemSlotCellSize);
             Image image = itemSlotRectTransform.Find("ItemIcon").GetComponent<Image>();
