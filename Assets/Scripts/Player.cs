@@ -46,8 +46,20 @@ public class Player : MonoBehaviour
                 inventory.RemoveItem(new Item { itemType = item.itemType, amount = 1 });
                 break;
             case ItemType.Weapon:
+                if (inventory.weaponEquip == null)
+                {
+                    Debug.Log("Item Has Been Equiped!");
+                    inventory.EquipItem(item);
+                    inventory.RemoveItem(item);
+                }
+                break;
             case ItemType.Armor:
-                Debug.Log("Item Cannot Be Used!");
+                if (inventory.armorEquip == null)
+                {
+                    Debug.Log("Item Has Been Equiped!");
+                    inventory.EquipItem(item);
+                    inventory.RemoveItem(item);
+                }
                 break;
         }
     }

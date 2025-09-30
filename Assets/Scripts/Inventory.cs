@@ -11,6 +11,8 @@ public class Inventory
 
     private Action<Item> useItemAction;
     private List<Item> itemList;
+    public Item weaponEquip;
+    public Item armorEquip;
     private int maxItemSlots = 28;
     private String inventroyFull = "Inventroy is full!";
 
@@ -97,6 +99,20 @@ public class Inventory
     public void UseItem(Item item)
     {
         useItemAction(item);
+    }
+
+    public void EquipItem(Item item)
+    {
+        switch (item.itemType)
+        {
+            default:
+            case ItemType.Weapon:
+                weaponEquip = item;
+                break;
+            case ItemType.Armor:
+                armorEquip = item;
+                break;
+        }
     }
 
     private int ItemValue(Item.ItemType itemType)
