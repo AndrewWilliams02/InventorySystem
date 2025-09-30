@@ -7,21 +7,23 @@ using TMPro;
 
 public class Player : MonoBehaviour
 {
-    public Inventory inventory;
-    [SerializeField] private InventoryUI inventoryUI;
-    [SerializeField] private TextMeshProUGUI stats;
-    [SerializeField] private GameObject HUD;
-    private bool hudEnabled = true;
+    public Inventory inventory; //Refrence to the inventory class
+    [SerializeField] private InventoryUI inventoryUI; //Refrence to inventoryUI class
+    [SerializeField] private TextMeshProUGUI stats; //Refrence to player stats UI
+    [SerializeField] private GameObject HUD; //Refrence to inventory/shop UI
+    private bool hudEnabled = true; //Handles whether inventory/shop UI is visible
 
-    private List<Item.ItemType> possibleItems = new List<Item.ItemType>();
+    private List<Item.ItemType> possibleItems = new List<Item.ItemType>(); //Handles possible random item types
 
-    int HP=0, Dmg=0, DmgRed=0, Crit=0;
+    int HP=0, Dmg=0, DmgRed=0, Crit=0; //Handles player stat values
 
+    //Function that initiates variables
     void Awake()
     {
-        inventory = new Inventory(UseItem);
-        inventoryUI.SetInventory(inventory);
+        inventory = new Inventory(UseItem); //Initiates player inventory
+        inventoryUI.SetInventory(inventory); //Sets inventory to inventoryUI class
 
+        //Initiates all possible random item types
         possibleItems.Add(Item.ItemType.Weapon);
         possibleItems.Add(Item.ItemType.Armor);
         possibleItems.Add(Item.ItemType.HealthPotion);
@@ -30,34 +32,35 @@ public class Player : MonoBehaviour
         possibleItems.Add(Item.ItemType.DamageBuffPotion);
     }
 
+    //Function that checks the type of item and sets the action from using said item
     private void UseItem(Item item)
     {
         switch (item.itemType)
         {
             default:
-            case ItemType.HealthPotion:
+            case ItemType.HealthPotion: //If item is health potion currently does nothing
                 Debug.Log("Player Used Health Potion!");
                 inventory.RemoveItem(new Item { itemType = item.itemType, amount = 1 });
                 break;
-            case ItemType.CritPotion:
+            case ItemType.CritPotion: //If item is crit potion increases crit rate stat
                 Debug.Log("Player Used Crit Potion!");
                 inventory.RemoveItem(new Item { itemType = item.itemType, amount = 1 });
                 Crit += 1;
                 UpdateStats();
                 break;
-            case ItemType.DamageReductionPotion:
+            case ItemType.DamageReductionPotion: //If item is damage reduction potion increases damage reduction stat
                 Debug.Log("Player Used Damage Reduction Potion!");
                 inventory.RemoveItem(new Item { itemType = item.itemType, amount = 1 });
                 DmgRed += 2;
                 UpdateStats();
                 break;
-            case ItemType.DamageBuffPotion:
+            case ItemType.DamageBuffPotion: //If item is damage potion increases damage stat
                 Debug.Log("Player Used Damage Buff Potion!");
                 inventory.RemoveItem(new Item { itemType = item.itemType, amount = 1 });
                 Dmg += 5;
                 UpdateStats();
                 break;
-            case ItemType.Weapon:
+            case ItemType.Weapon: //If item is weapon and the weapon slot is empty, equips item and increases attack stats
                 if (inventory.weaponEquip == null)
                 {
                     Debug.Log("Item Has Been Equiped!");
@@ -68,7 +71,7 @@ public class Player : MonoBehaviour
                     UpdateStats();
                 }
                 break;
-            case ItemType.Armor:
+            case ItemType.Armor: //If item is armor and the armor slot is empty, equips item and increases defensive stats
                 if (inventory.armorEquip == null)
                 {
                     Debug.Log("Item Has Been Equiped!");
@@ -82,6 +85,7 @@ public class Player : MonoBehaviour
         }
     }
 
+    //Function that adds a random item to player inventory
     public void GiveRandomItem()
     {
         int randomIndex = Random.Range(0, 5);
@@ -89,11 +93,13 @@ public class Player : MonoBehaviour
         inventory.AddItem(new Item { itemType = possibleItems[randomIndex], amount = 1 });
     }
 
+    //Function that updates player stats UI
     public void UpdateStats()
     {
         stats.text = $"HP: +{HP}\nDamage Reduction: +{DmgRed}%\nDamage: +{Dmg}\nCrit Chance: +{Crit}%";
     }
 
+    //Function that checks if an equipment slot of the matching index is full and then decreases stats if so
     public void UnequipStatChange(int index)
     {
         if (index == 0 && inventory.weaponEquip != null)
@@ -108,8 +114,10 @@ public class Player : MonoBehaviour
         }
     }
 
+    //Function to check for key imputs
     public void Update()
     {
+        //Either disables or enables inventory/shop UI depending on state
         if (Input.GetKeyDown(KeyCode.I))
         {
             if (hudEnabled)

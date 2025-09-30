@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Item
 {
+    //Enum list of different item types
     public enum ItemType
     {
         Armor,
@@ -14,9 +15,11 @@ public class Item
         DamageBuffPotion,
     }
 
+    //Handles item type variables and count of said item
     public ItemType itemType;
     public int amount;
 
+    //Function that checks for item type then returns the proper sprite for said item
     public Sprite GetSprite()
     {
         switch (itemType)
@@ -31,6 +34,7 @@ public class Item
         }
     }
 
+    //Function that defines which items can be stacked and which cant
     public bool IsStackable()
     {
         switch (itemType)
