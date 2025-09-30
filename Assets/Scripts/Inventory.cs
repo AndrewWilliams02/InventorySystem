@@ -41,7 +41,7 @@ public class Inventory
             {
                 itemList.Add(item);
             } 
-            else
+            else if (!itemAlreadyInInventory && itemList.Count > maxItemSlots)
             {
                 Debug.Log(inventroyFull);
             }
